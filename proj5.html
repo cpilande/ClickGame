@@ -1,0 +1,184 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<html>
+    <head>
+        <title> Catch the Mini Schnauzer </title>
+        <canvas id="gc" width="640" height="480"> </canvas>
+        <link rel="stylesheet" type="text/css" rel="noopener" target="_blank" href="proj5.css">
+
+        <script>
+            let hits = 0; //number of times the icon is clicked
+            var speed = 0; //number of ms between jumps
+            var gameStarted = false; //whether "Start Game" was selected
+            
+            window.onload=function() //on loading of the window
+            {
+                document.getElementById("image").style.display="none"; //hide the dog image
+
+                canvas =document.getElementById('gc'); //set the canvas
+                context=canvas.getContext('2d');
+                context.globalCompositeOperation = 'destination-over';
+            }
+
+            function update() { //update the dog location on each click     
+                document.getElementById("image").onclick = function() {
+                
+                //Play audio if the dog is clicked
+                var audio = document.getElementById("audio");
+                audio.play();
+                
+                //Hide the dog's location
+                document.getElementById("image").style.display = 'none';
+                
+                //Increment & display the number of times the dog is clicked
+                hits++;
+                document.getElementById('hits').innerHTML = "Hits: " + hits; 
+                
+                //Update the dog's location randomly
+                var x = (Math.random()* 400);
+                var y = (Math.random()*400);
+
+                document.getElementById("image").style.top = x + 'px';
+                document.getElementById("image").style.left = y + 'px'; 
+ 
+               setTimeout(makeVisible, speed); //Call the makeVisible function
+                };
+                
+                }
+
+                function makeVisible() { //makes the dog visible again
+
+                    document.getElementById("image").style.display = 'initial';
+
+                    //outputs the coordinates of the image
+                    let rect = document.getElementById("image").getBoundingClientRect();
+                    
+                    var elX = Math.round(rect.x * 100) / 100;
+                    var elY = Math.round(rect.y * 100) / 100;
+
+                    
+
+                    document.getElementById("xPos").innerHTML = 'X: ' + elX;
+                    document.getElementById("yPos").innerHTML = 'Y: ' + elY;
+                }
+            
+           function startGame() //when the "Start Game" button is clicked
+           {
+                hits = 0; //reset values of hits
+
+                speedEntered = false; //no speed has been entered yet
+                gameStarted = true; //the game has been started
+
+
+                let startDiv = document.getElementById("start");
+                var f = document.querySelector("form");
+                
+                //Take the value of speed in
+                speed = document.getElementById("speed").value;
+                speed = parseInt(speed);
+                
+                if (Number.isNaN(speed)) { //If no speed was entered, re-prompt the user
+                    window.alert("Enter a speed value");
+                    document.getElementById("speed").value = "";
+                    speed = document.getElementById("speed").value;
+                }
+
+                else if (speed < 100 || speed > 10000) //If the speed isn't in the given range
+                    window.alert("Speed should be a value between 100 and 10,000.")
+
+                else //The speed was correctly inputted
+                    speedEntered = true;
+
+                if (speedEntered) { //If the speed was inputted correctly...
+                
+                    //Output the number of hits, coordinates & speed
+                    document.getElementById('hits').innerHTML = 0; 
+                    document.getElementById("xPos").innerHTML = "X:";
+                    document.getElementById("yPos").innerHTML = "Y:";
+
+                    document.getElementById("speedLabel").innerHTML = "Speed: " + speed;
+                    document.getElementById("gameStatus").innerHTML = "In Progress";
+                    
+                    //Show the dog
+                    document.getElementById("image").style.display = 'initial';
+                
+                    setTimeout(update, speed);
+                }
+                else {
+                    return;
+                }
+           }
+
+           function stopGame() //if the "Stop Game" button was clicked...
+           { 
+                if (gameStarted) { //only works if the game was already started...
+                let startDiv = document.getElementById("stop");
+
+                document.getElementById("gameStatus").innerHTML = "Game Over";   
+                
+                document.getElementById('hits').innerHTML = "Final Score: " + hits; 
+                document.getElementById("image").style.display = 'none';
+           }
+        }
+
+        </script>
+    </head>
+
+    <body>
+      <div id = "background" style="margin: center; width:500; height: 400px; background-color: blue; padding: 20px; border: 5px solid black; position: fixed; top: 20px;">   
+
+         <img id="image" src="MiniSchnauzer.png" width = "50" height = "50" onclick="updateScore()" position = "absolute"display = "none" /> 
+         <audio id ="audio" src="audio.m4a"> </audio>
+         
+        <canvas id="gc" width="500" height="400"> </canvas>
+        </div>
+   
+        <br> 
+        
+        <div id = "startGameBlock" style="margin: left; width: 400px; background-color: whitesmoke; padding: 20px; border: 5px solid black;font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">
+        
+            <text> <center> <b><u>  CS 326, Project #5: Catch the Mini Schnauzer </b>  </u> </center></text>
+            <br> 
+            <text> <left><center> <b>  By: Carmela Pilande </center> </b> </left></h1>
+             <hr> <br>
+
+             <form name=speed_form> 
+                Speed (ms between jumps) <input type="text" id = "speed" placeholder = "100" required > 
+             </form> <br> 
+
+             <div id="start" style="display:block">
+            <a style="font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif" href="#" onclick="startGame()"> <b> Start Game</b>  </a>
+        </div> <br>  
+
+        <div id="stop" style="display:block">
+            <a href="#" onclick="stopGame()">Stop Game</a>
+        </div> 
+        <br> <hr> <br>
+            <text>  <b><u>  Game Status: </b>  </u> </b></text>
+            <p id ="gameStatus"> None </p>
+            <hr> <br>
+            <text>  <b><u> Usage Instructions </b>  </u> </b></text>
+            <p> Click on the Mini-Schnauzer to receive a point. </p>
+            <p> To start the game, enter a speed from 100 to 10,000 ms.  </p>
+            <p > Click<b style="color: green"> Start Game </b> to begin. </p>
+            <p > Click <b style = "color: red"> Stop Game </b> to finish and output the final score.</p>
+            <p > If a new speed is entered, the game will reset. </p>
+            
+    </div> 
+            
+        <div id="gamerInfo" style="margin: left; width: 400px; background-color: whitesmoke; padding: 10px; border: 5px solid black;font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif">
+            <text> <center> <b><u>  Gamer Info </b>  </u> </center></text>
+            <p> <b> <u> Hits </b> </u> </p>
+            <p id="hits"> 0</p>
+            <hr> 
+            
+            <p> <b> <u> Current Position </b> </u> </p>
+            <p id="xPos"> X: </p>
+            <p id="yPos"> Y: </p>
+            <p id ="speedLabel"> Speed:  </p>
+            
+        </div>
+   
+    </body>
+</html>

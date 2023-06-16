@@ -1,0 +1,30 @@
+body {
+  background-color: beige;
+}
+
+#image { 
+    cursor: pointer;
+    position: absolute; 
+    top: 0px; 
+    left: 0px; 
+    transition: all 1s;
+  }
+  #gamerInfo {
+    position: absolute;
+    bottom: 10px;
+    left: 110px;
+  }
+  #background {
+    background-image: url('grass.jpeg');
+    bottom: 20px;
+    left: 110px;
+  }
+
+  #startGameBlock {
+    position: absolute;
+    left: 800px;
+    top: 20px;
+    
+    
+  }
+  
